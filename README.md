@@ -24,8 +24,3 @@ El proyecto cuenta con gestión completa de tareas:
 4. **PUT** /api/tasks/{id}
 5. **PATCH** /api/tasks/{id}/status
 6. **DELETE** /api/tasks/{id}
-
-
-
-# Ejecutar la aplicación
-mvn spring-boot:run
