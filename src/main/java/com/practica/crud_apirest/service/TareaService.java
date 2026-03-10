@@ -26,11 +26,16 @@ public class TareaService {
                 .collect(Collectors.toList());
     }
 
-    public TareaDTO service_buscaTarea(Long id_tarea, TareaDTO dto){
+    public TareaDTO service_buscaTarea(Long id_tarea){
+        Optional<Tarea> existe = repo.findById(id_tarea);
 
-            return repo.findById(id_tarea)
-                        .map(TareaMapper::toDTO)
-                        .orElseThrow(()-> new RuntimeException("Tarea no encontrada con id: "+id_tarea));
+        if(existe.isPresent()){
+            Tarea tarea = existe.get();
+            return TareaMapper.toDTO(tarea);
+        }
+        else{
+            throw new RuntimeException("Tarea no encontrada con id: "+id_tarea);
+        }
     }
 
     public TareaDTO service_InsertaTarea(TareaDTO dto){
@@ -51,7 +56,6 @@ public class TareaService {
             tarea.setTitulo(dto.getTitulo());
             tarea.setDescripcion(dto.getDescripcion());
             tarea.setEstado(dto.getEstado());
-            tarea.setFecha_creacion(dto.getFecha_creacion());
             tarea.setFecha_fin(dto.getFecha_fin());
             tarea.setUltima_mod(LocalDateTime.now());
 

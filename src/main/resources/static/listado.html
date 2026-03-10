@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://kit.fontawesome.com/1c2e66feae.js" crossorigin="anonymous"></script>
+    <title>Tareas</title>
+</head>
+<header class="bg-blue-500 w-full h-25 flex items-center p-4 justify-between">
+        <label for="" class="text-3xl text-white p-5 font-bold">TAREAS</label>
+        <a href="/"><button class="m-2 p-1 pl-4 bg-gray-100 rounded-xl shadow-md/30 hover:cursor-pointer">Volver<i class="fa-solid fa-arrow-left m-2"></i></button></a>
+    </header>
+<body>
+    
+<div class="overflow-x-auto w-full p-5">
+    <table class=" table w-full" id="tablaTareas">
+        <thead>
+            <tr>
+            <th>ID tarea</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Fecha de creación</th>
+            <th>Fecha fin</th>
+            <th>Última mod.</th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+            
+        </tbody>
+    </table>
+
+</div>
+    
+    
+</body>
+
+<script>
+
+    async function cargarTareas(){
+        const respuesta = await fetch("/api/tareas");
+        const tareas = await respuesta.json();
+
+        const tbody = document.querySelector('#tablaTareas tbody');
+        tbody.innerHTML = "";
+
+        tareas.forEach(tarea => {
+            const fila = `<tr>
+                <td>${tarea.id_tarea}</td>
+                <td>${tarea.titulo}</td>
+                <td>${tarea.descripcion}</td>
+                <td>${tarea.estado}</td>
+                <td>${tarea.fecha_creacion}</td>
+                <td>${tarea.fecha_fin}</td>
+                <td>${tarea.ultima_mod}</td>
+                <td>
+                    <a href="form.html?id=${tarea.id_tarea}">
+                        <button  class="btn bg-blue-500 text-white font-bold rounded p-2 m-2 shadow-md/30 hover:cursor-pointer">Editar</button>
+                    </a>
+                </td>
+                <td>
+                        <button onclick="eliminarTarea(${tarea.id_tarea})" class="btn bg-red-500 text-white font-bold rounded p-2 m-2 shadow-md/30 hover:cursor-pointer">Borrar</button>
+                </td>
+            `
+            tbody.innerHTML += fila;
+        });
+    }
+
+    async function eliminarTarea(id){
+        if(!confirm("¿Quieres eliminar la tarea con id: "+id+"?")){
+            return;
+        }
+
+        try{
+            const response = await fetch(`/api/tareas/${id}`,{
+                method:'DELETE'
+            });
+
+            if(response.ok){
+
+            alert("Tarea eliminada correctamente");
+            cargarTareas();
+            }
+            else{
+                alert("Error al intentar eliminar la tarea.")
+            }
+        }
+        catch (error){
+            console.error("Error de borrado:",error);
+        }
+        
+    }
+
+    document.addEventListener('DOMContentLoaded', cargarTareas)
+</script>
+</html>

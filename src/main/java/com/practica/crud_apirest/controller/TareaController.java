@@ -38,6 +38,11 @@ public class TareaController {
         return servicio_tarea.service_ConsultaTareas();
     }
 
+    @GetMapping("/{id_tarea}")
+    public TareaDTO buscarTarea(@PathVariable Long id_tarea) {
+        return servicio_tarea.service_buscaTarea(id_tarea);
+    }
+    
 
     @PostMapping
     public TareaDTO insertarTarea(@RequestBody TareaDTO dto) {
@@ -53,6 +58,7 @@ public class TareaController {
 
     @DeleteMapping("/{id_tarea}")
     public String borrarTarea(@PathVariable Long id_tarea){
+
         return servicio_tarea.service_eliminaTarea(id_tarea);
     }
     
