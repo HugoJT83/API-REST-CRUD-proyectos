@@ -36,6 +36,9 @@ public class TareaDTO {
     @FutureOrPresent(message = "la fecha tiene que ser de hoy en adelante.")
     private LocalDateTime ultima_mod;
 
+    
+    public TareaDTO() {
+    }
 
     public TareaDTO(Long id_tarea, String titulo, String descripcion, Estado estado, LocalDateTime fecha_creacion,
             LocalDateTime fecha_fin, LocalDateTime ultima_mod) {
@@ -125,7 +128,66 @@ public class TareaDTO {
                 + estado + ", fecha_creacion=" + fecha_creacion + ", fecha_fin=" + fecha_fin + ", ultima_mod="
                 + ultima_mod + "]";
     }
-    
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id_tarea == null) ? 0 : id_tarea.hashCode());
+        result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
+        result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
+        result = prime * result + ((estado == null) ? 0 : estado.hashCode());
+        result = prime * result + ((fecha_creacion == null) ? 0 : fecha_creacion.hashCode());
+        result = prime * result + ((fecha_fin == null) ? 0 : fecha_fin.hashCode());
+        result = prime * result + ((ultima_mod == null) ? 0 : ultima_mod.hashCode());
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TareaDTO other = (TareaDTO) obj;
+        if (id_tarea == null) {
+            if (other.id_tarea != null)
+                return false;
+        } else if (!id_tarea.equals(other.id_tarea))
+            return false;
+        if (titulo == null) {
+            if (other.titulo != null)
+                return false;
+        } else if (!titulo.equals(other.titulo))
+            return false;
+        if (descripcion == null) {
+            if (other.descripcion != null)
+                return false;
+        } else if (!descripcion.equals(other.descripcion))
+            return false;
+        if (estado != other.estado)
+            return false;
+        if (fecha_creacion == null) {
+            if (other.fecha_creacion != null)
+                return false;
+        } else if (!fecha_creacion.equals(other.fecha_creacion))
+            return false;
+        if (fecha_fin == null) {
+            if (other.fecha_fin != null)
+                return false;
+        } else if (!fecha_fin.equals(other.fecha_fin))
+            return false;
+        if (ultima_mod == null) {
+            if (other.ultima_mod != null)
+                return false;
+        } else if (!ultima_mod.equals(other.ultima_mod))
+            return false;
+        return true;
+    }     
     
     
 }
