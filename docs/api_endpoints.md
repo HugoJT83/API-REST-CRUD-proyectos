@@ -1,17 +1,125 @@
-
-TODO
-
 # API ENDPOINTs del proyecto
 
 ---
 
-**GET /api/v1/projects** - List projects. Query: `status`, `limit` (1-100), `offset`, `sort`, `order`.
+**GET /api/tareas** - Lista las tareas de la BD
 
-**POST /api/v1/projects** - Create project. Body: `name` (required, unique in org), `description`, `color`.
+* URL: "/", "listado.html"
+    * Respuesta: 200 OK
+    * Body: Array de objetos en formato JSON de tipo TareaDTO
 
-**PATCH /api/v1/projects/:projectId** - Partial update. Admin+ to archive.
+* Ejemplo de respuesta:
 
-**DELETE /api/v1/projects/:projectId** - Soft delete project and all tasks. Admin+ only.
+```json
+[
+    {
+        "id_tarea": 1,
+        "titulo": "Actualizar kernel",
+        "descripcion": "holaaaaaajkghjghjh",
+        "estado": "POR_HACER",
+        "fecha_creacion": "2026-03-01T08:00:00",
+        "fecha_fin": "2026-03-01T10:00:00",
+        "ultima_mod": "2026-03-11T09:08:47.737195"
+    },
+    {
+        "id_tarea": 2,
+        "titulo": "Crear índices",
+        "descripcion": "Optimización de tablafghfgh transacciones",
+        "estado": "POR_HACER",
+        "fecha_creacion": "2026-03-01T09:00:00",
+        "fecha_fin": "1970-01-07T00:00:00",
+        "ultima_mod": "2026-03-11T09:08:12.439172"
+    }
+]
+```
 
+**GET /api/tareas/{id_tarea}** - Obtiene los datos de una tarea concreta
+
+* URL:"/listado.html","/form.html?id=${id_tarea}"
+    * Respuesta: 200 OK
+    * Body: Elemento JSON de tipo TareaDTO
+
+* Ejemplo de respuesta:
+
+```json
+    {
+        "id_tarea": 2,
+        "titulo": "Crear índices",
+        "descripcion": "Optimización de tablafghfgh transacciones",
+        "estado": "POR_HACER",
+        "fecha_creacion": "2026-03-01T09:00:00",
+        "fecha_fin": "1970-01-07T00:00:00",
+        "ultima_mod": "2026-03-11T09:08:12.439172"
+    }
+```
+
+**POST /api/tareas** - Introduce una instancia de tarea en la BD
+
+* URL:"/form_new.html"
+    * Respuesta: 200 OK
+    * Body: Elemento JSON de tipo TareaDTO
+
+* Ejemplo de respuesta: 
+
+```json
+{
+    "id_tarea": 52,
+    "titulo": "Cosas",
+    "descripcion": "Optimización de transacciones",
+    "estado": "POR_HACER",
+    "fecha_creacion": "2026-12-12T09:00:00",
+    "fecha_fin": "2026-12-12T00:00:00",
+    "ultima_mod": "2026-03-11T11:30:04.3393611"
+}
+```
+
+**PUT /api/tareas/{id_tarea}** - Actualiza los datos de una tarea en la BD
+
+* URL:"/form.html?id=${id_tarea}"
+    * Respuesta: 200 OK
+    * Body: Elemento JSON de tipo TareaDTO
+
+* Ejemplo de respuesta: 
+
+```json
+{
+    "id_tarea": 52,
+    "titulo": "Cosas",
+    "descripcion": "Optimización de transacciones",
+    "estado": "POR_HACER",
+    "fecha_creacion": "2026-12-12T09:00:00",
+    "fecha_fin": "2026-12-12T00:00:00",
+    "ultima_mod": "2026-03-11T11:30:04.3393611"
+}
+```
+
+**PATCH /api/tareas/{id_tarea}/{campo}** - Modifica un campo de una de las tareas de la BD; este también actualiza obligatoriamente el campo "ultima modificacion"
+
+* URL:"/listado.html"
+    * Respuesta: 200 OK
+    * Body: valor nuevo a modificar
+
+* Ejemplo de respuesta: 
+```json
+{
+    "id_tarea": 52,
+    "titulo": "Cosas",
+    "descripcion": "Optimización de transacciones",
+    "estado": "POR_HACER",
+    "fecha_creacion": "2026-12-12T09:00:00",
+    "fecha_fin": "2026-12-12T00:00:00",
+    "ultima_mod": "2026-03-11T11:30:04.3393611"
+}
+```
+
+
+**DELETE /api/tareas/{id}** - Borra una tarea de la BD
+
+
+* URL:"/listado.html"
+    * Respuesta: 200 OK
+    * Body: valor nuevo a modificar
+
+* Ejemplo de respuesta: "Tarea borrada correctamente"
 
 ---
