@@ -15,6 +15,7 @@ import com.practica.crud_apirest.repository.Repo_Tareas;
 import com.practica.crud_apirest.service.TareaService;
 
 import jakarta.validation.Valid;
+import lombok.val;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,25 +50,25 @@ public class TareaController {
     
 
     @PostMapping
-    public TareaDTO insertarTarea(@RequestBody TareaDTO dto) {
+    public TareaDTO insertarTarea(@Valid @RequestBody TareaDTO dto) {
         
         return servicio_tarea.service_InsertaTarea(dto);
     }
 
     @PutMapping("/{id_tarea}")
-    public TareaDTO actualizarTarea(@PathVariable Long id_tarea, @RequestBody TareaDTO dto) {
+    public TareaDTO actualizarTarea(@Valid @PathVariable Long id_tarea,@Valid @RequestBody TareaDTO dto) {
         
         return servicio_tarea.service_actualizaTarea(id_tarea, dto);
     }
 
     @DeleteMapping("/{id_tarea}")
-    public String borrarTarea(@PathVariable Long id_tarea){
+    public String borrarTarea(@Valid @PathVariable Long id_tarea){
 
         return servicio_tarea.service_eliminaTarea(id_tarea);
     }
 
     @PatchMapping("/{id_tarea}/{campo}")
-    public TareaDTO actualizarCampoTarea(@PathVariable Long id_tarea, @PathVariable String campo, @RequestBody String nuevoValor) {
+    public TareaDTO actualizarCampoTarea(@Valid @PathVariable Long id_tarea,@Valid @PathVariable String campo,@Valid @RequestBody String nuevoValor) {
 
         String valorLimpio = nuevoValor.replace("\"", "");
         return servicio_tarea.service_actualizaCampoTarea(id_tarea,campo,valorLimpio);
