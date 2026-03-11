@@ -16,6 +16,7 @@ import com.practica.crud_apirest.service.TareaService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +62,13 @@ public class TareaController {
 
         return servicio_tarea.service_eliminaTarea(id_tarea);
     }
-    
+
+    @PatchMapping("/{id_tarea}/{campo}")
+    public TareaDTO actualizarCampoTarea(@PathVariable Long id_tarea, @PathVariable String campo, @RequestBody String nuevoValor) {
+
+        String valorLimpio = nuevoValor.replace("\"", "");
+        return servicio_tarea.service_actualizaCampoTarea(id_tarea,campo,valorLimpio);
+    }   
     
     
 

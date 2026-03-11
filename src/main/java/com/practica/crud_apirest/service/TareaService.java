@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.practica.crud_apirest.dto.TareaDTO;
+import com.practica.crud_apirest.entity.Estado;
 import com.practica.crud_apirest.entity.Tarea;
 import com.practica.crud_apirest.mapper.TareaMapper;
 import com.practica.crud_apirest.repository.Repo_Tareas;
@@ -76,6 +77,38 @@ public class TareaService {
         }
         else{
             return "Tarea: "+id_tarea+" no encontrada";
+        }
+    }
+
+    public TareaDTO service_actualizaCampoTarea(Long id_tarea, String campo, String valor) {
+        
+        Optional<Tarea> existe = repo.findById(id_tarea);
+
+        if(existe.isPresent()){
+
+            Tarea tarea = existe.get();
+
+            switch (campo) {
+                case "titulo":
+                    tarea.setTitulo(valor);
+                    break;
+                case "descripcion":
+                    tarea.setDescripcion(valor);
+                    break;
+                case "estado":
+                    tarea.setEstado(Estado.valueOf(valor.toUpperCase()));
+                    break;
+                case "fecha_fin":
+                    tarea.setFecha_fin(LocalDateTime.parse(valor));
+                    break;
+            }
+
+            tarea.setUltima_mod(LocalDateTime.now());
+            Tarea actualizado = repo.save(tarea);
+            return TareaMapper.toDTO(actualizado);
+        }
+        else{
+            throw new RuntimeException("Tarea no encontrada con id:"+id_tarea);
         }
     }
 }

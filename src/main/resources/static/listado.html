@@ -22,7 +22,7 @@
 <body>
     
 <div class="overflow-x-auto w-full p-5">
-    <table class=" table w-full" id="tablaTareas">
+    <table hidden class=" table w-full" id="tablaTareas">
         <thead>
             <tr>
             <th>ID tarea</th>
@@ -38,13 +38,83 @@
             
         </tbody>
     </table>
-
+    <div id="info_noTarea" class="text-center">
+        <h1>No hay nada por aquí... ¡por ahora!</h1>
+        <p>Crea una tarea para que se muestre aquí.</p>
+    </div>
 </div>
     
     
 </body>
 
 <script>
+
+    let valorOriginal ="";
+    let valorBase = "";
+
+    async function actualizarCelda(elemento){
+        const id = elemento.getAttribute('data-id');
+        const campo = elemento.getAttribute('data-campo');
+
+        let hay_cambio = true;
+        let valor_nuevo = "";
+        
+        if(campo == "titulo" || campo == "descripcion"){
+
+            valor_nuevo = elemento.innerText.trim();
+            valorBase = valorOriginal;
+            
+            if(valorOriginal == valor_nuevo){
+                hay_cambio = false;
+            }
+            
+        }
+        else if(campo == "estado" || campo == "fecha_fin"){
+
+            valor_nuevo = elemento.value;
+            valorBase = valorOriginal;
+        }
+        
+
+        if(hay_cambio){  
+            try{
+                const respuesta = await fetch(`/api/tareas/${id}/${campo}`,{
+                    method: 'PATCH',
+                    body: valor_nuevo
+                });
+
+                if(respuesta.ok){
+                    alert("¡modificacion correcta!");
+                    cargarTareas();
+                }
+                else{
+                    alert("la modificación no tenía el formato correcto.");
+                    if(campo == "titulo" || campo == "descripcion"){
+
+                        elemento.innerText = valorBase;
+                        
+                    }
+                    else if(campo == "estado" || campo == "fecha_fin"){
+
+                        elemento.value = valorBase;
+                    }
+                }
+            }
+            catch(error){
+                alert("Error de modificacion.");
+                if(campo == "titulo" || campo == "descripcion"){
+
+                    elemento.innerText = valorOriginal;
+                    
+                }
+                else if(campo == "estado" || campo == "fecha_fin"){
+
+                    elemento.value = valorOriginal;
+                }
+            }
+
+        }
+    }
 
     async function buscarTarea(){
         const id_tarea = document.getElementById("inputIdTarea").value;
@@ -68,11 +138,49 @@
 
             const fila = `<tr>
                 <td>${tarea.id_tarea}</td>
-                <td>${tarea.titulo}</td>
-                <td>${tarea.descripcion}</td>
-                <td>${tarea.estado}</td>
-                <td>${tarea.fecha_creacion}</td>
-                <td>${tarea.fecha_fin}</td>
+
+                        <td 
+                            contenteditable="true"
+                            onfocus="guardarOriginal(this)"
+                            onblur="actualizarCelda(this)"
+                            class="hover:cursor-pointer"
+                            data-id="${tarea.id_tarea}"
+                            data-campo="titulo"
+                        >${tarea.titulo}
+                        </td>
+
+                        <td
+                            contenteditable="true"
+                            onfocus="guardarOriginal(this)"
+                            onblur="actualizarCelda(this)"
+                            class="hover:cursor-pointer"
+                            data-id="${tarea.id_tarea}"
+                            data-campo="descripcion"
+                        >${tarea.descripcion}
+                        </td>
+
+                        <td>
+                            <select
+                                onfocus="guardarOriginal(this)" 
+                                onchange="actualizarCelda(this)"
+                                data-id="${tarea.id_tarea}"
+                                data-campo="estado"
+                            >
+                                <option value="POR_HACER" ${tarea.estado === 'POR_HACER' ? 'selected' : ''}>POR HACER</option>
+                                <option value="HECHO" ${tarea.estado === 'HECHO' ? 'selected' : ''}>HECHO</option>
+                            </select>
+                        </td>
+
+                        <td>${tarea.fecha_creacion}</td>
+                        <td>
+                            <input type="datetime-local"
+                                value=${tarea.fecha_fin}
+                                onfocus="guardarOriginal(this)"
+                                onchange="actualizarCelda(this)"
+                                data-id="${tarea.id_tarea}"
+                                data-campo="fecha_fin"
+                            >
+                        </td>
                 <td>${tarea.ultima_mod}</td>
                 <td>
                     <a href="form.html?id=${tarea.id_tarea}">
@@ -93,31 +201,91 @@
 
     async function cargarTareas(){
         const respuesta = await fetch("/api/tareas");
-        const tareas = await respuesta.json();
+        
 
-        const tbody = document.querySelector('#tablaTareas tbody');
-        tbody.innerHTML = "";
+        //respuesta bien
+        if(respuesta.ok){
+            const tareas = await respuesta.json();
 
-        tareas.forEach(tarea => {
-            const fila = `<tr>
-                <td>${tarea.id_tarea}</td>
-                <td>${tarea.titulo}</td>
-                <td>${tarea.descripcion}</td>
-                <td>${tarea.estado}</td>
-                <td>${tarea.fecha_creacion}</td>
-                <td>${tarea.fecha_fin}</td>
-                <td>${tarea.ultima_mod}</td>
-                <td>
-                    <a href="form.html?id=${tarea.id_tarea}">
-                        <button  class="btn bg-blue-500 text-white font-bold rounded p-2 m-2 shadow-md/30 hover:cursor-pointer">Editar</button>
-                    </a>
-                </td>
-                <td>
-                        <button onclick="eliminarTarea(${tarea.id_tarea})" class="btn bg-red-500 text-white font-bold rounded p-2 m-2 shadow-md/30 hover:cursor-pointer">Borrar</button>
-                </td>
-            `
-            tbody.innerHTML += fila;
-        });
+            //existen tareas
+            if(tareas.length > 0){
+                document.getElementById("tablaTareas").removeAttribute("hidden");
+                document.getElementById("info_noTarea").setAttribute("hidden",true);
+                const tbody = document.querySelector('#tablaTareas tbody');
+                tbody.innerHTML = "";
+
+                tareas.forEach(tarea => {
+                    const fila = `<tr>
+                        <td>${tarea.id_tarea}</td>
+
+                        <td 
+                            contenteditable="true"
+                            onfocus="guardarOriginal(this)"
+                            onblur="actualizarCelda(this)"
+                            data-id="${tarea.id_tarea}"
+                            data-campo="titulo"
+                            class="hover:cursor-pointer"
+                         >${tarea.titulo}</td>
+
+                        <td
+                            contenteditable="true"
+                            onfocus="guardarOriginal(this)"
+                            onblur="actualizarCelda(this)"
+                            data-id="${tarea.id_tarea}"
+                            data-campo="descripcion"
+                            class="hover:cursor-pointer"
+                        >${tarea.descripcion}</td>
+
+                        <td>
+                            <select
+                                onfocus="guardarOriginal(this)" 
+                                onchange="actualizarCelda(this)"
+                                data-id="${tarea.id_tarea}"
+                                data-campo="estado"
+                            >
+                                <option value="POR_HACER" ${tarea.estado === 'POR_HACER' ? 'selected' : ''}>POR HACER</option>
+                                <option value="HECHO" ${tarea.estado === 'HECHO' ? 'selected' : ''}>HECHO</option>
+                            </select>
+                        </td>
+
+                        <td>${tarea.fecha_creacion}</td>
+                        <td>
+                            <input type="datetime-local"
+                                value=${tarea.fecha_fin}
+                                onfocus="guardarOriginal(this)"
+                                onchange="actualizarCelda(this)"
+                                data-id="${tarea.id_tarea}"
+                                data-campo="fecha_fin"
+                            >
+                        </td>
+
+                        <td>${tarea.ultima_mod}</td>
+                        <td>
+                            <a href="form.html?id=${tarea.id_tarea}">
+                                <button  class="btn bg-blue-500 text-white font-bold rounded p-2 m-2 shadow-md/30 hover:cursor-pointer">Editar</button>
+                            </a>
+                        </td>
+                        <td>
+                                <button onclick="eliminarTarea(${tarea.id_tarea})" class="btn bg-red-500 text-white font-bold rounded p-2 m-2 shadow-md/30 hover:cursor-pointer">Borrar</button>
+                        </td>
+                    `
+                    tbody.innerHTML += fila;
+                });
+            }  
+        }
+        else{
+            
+        }
+        
+    }
+
+    function guardarOriginal(elemento){
+        if(elemento.getAttribute("data-campo") == "titulo" || elemento.getAttribute("data-campo") == "descripcion"){
+            valorOriginal = elemento.innerText.trim();
+        }
+        else{
+            valorOriginal = elemento.value;
+        }
     }
 
     async function eliminarTarea(id){
