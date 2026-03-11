@@ -13,6 +13,15 @@ La aplicación consta de una API que permite obtener e introducir datos en una B
 
 ---
 
+## Documentación
+
+Tanto en este README como en la carpeta docs se puede encontrar la documentación correspondiente al proyecto; tanto el SCHEMA de la tabla de tareas como los API_ENDPOINTS detallados.
+
+* [Api endpoints](./docs/api_endpoints.md)
+* [SCHEMA](./docs/db_schema.md)
+
+---
+
 ## Ejecución
 
 La aplicación se puede ejecutar directamente sin necesidad de realizar ninguna migración ni descargar ninguna dependencia; esta hace uso de CDNs tanto de Font Awesome como de TailWindCSS, por lo que el uso de esta aplicación es meramente didáctica y NO está diseñada para producción.

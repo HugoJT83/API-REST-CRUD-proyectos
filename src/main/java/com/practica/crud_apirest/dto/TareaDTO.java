@@ -6,6 +6,7 @@ import com.practica.crud_apirest.entity.Estado;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -23,7 +24,7 @@ public class TareaDTO {
     @Size(min = 5,max = 200, message = "la descripcion no puede tener más de 200 caracteres")
     private String descripcion;
 
-    @Pattern(regexp = "HECHO|POR_HACER")
+    @NotNull(message = "el estado es obligatorio")
     private Estado estado;
 
     @FutureOrPresent(message = "la fecha tiene que ser de hoy en adelante.")
