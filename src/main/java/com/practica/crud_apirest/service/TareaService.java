@@ -2,8 +2,12 @@ package com.practica.crud_apirest.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.apache.catalina.connector.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.practica.crud_apirest.dto.TareaDTO;
 import com.practica.crud_apirest.entity.Estado;
@@ -66,21 +70,20 @@ public class TareaService {
             return TareaMapper.toDTO(actualizado);
         }
         else{
-            throw new RuntimeException("Tarea no encontrada con id:"+idTarea);
+            throw new EntityNotFoundException("la tarea con id: "+idTarea+" no existe");
         }
     }
 
-    public String serviceDeleteTarea (Long idTarea){
+    public void serviceDeleteTarea (Long idTarea){
         if(repo.existsById(idTarea)){
             repo.deleteById(idTarea);
-            return "Tarea borrada correctamente";
         }
         else{
-            return "Tarea: "+idTarea+" no encontrada";
+            throw new EntityNotFoundException("la tarea con id: "+idTarea+" no existe");
         }
     }
 
-    public TareaDTO serviceUpdateFieldTarea(Long idTarea, String campo, String valor) {
+    public TareaDTO serviceUpdateFieldTarea(Long idTarea, Map<String,Object> campos ) {
         
         Optional<Tarea> existe = repo.findById(idTarea);
 
@@ -88,27 +91,31 @@ public class TareaService {
 
             Tarea tarea = existe.get();
 
-            switch (campo) {
-                case "titulo":
-                    tarea.setTitulo(valor);
-                    break;
-                case "descripcion":
-                    tarea.setDescripcion(valor);
-                    break;
-                case "estado":
-                    tarea.setEstado(Estado.valueOf(valor.toUpperCase()));
-                    break;
-                case "fecha_fin":
-                    tarea.setFechaFin(LocalDateTime.parse(valor));
-                    break;
-            }
+            campos.forEach((clave,valor) ->{
+                switch (clave) {
+                    case "titulo":
+                        tarea.setTitulo((String)valor);
+                        break;
+                    case "descripcion":
+                        tarea.setDescripcion((String)valor);
+                        break;
+                    case "estado":
+                        tarea.setEstado(Estado.valueOf(valor.toString().toUpperCase()));
+                        break;
+                    case "fecha_fin":
+                        tarea.setFechaFin(LocalDateTime.parse(valor.toString()));
+                        break;
+                    default:
+                        throw new IllegalArgumentException("El campo "+clave+" no existe");
+                }    
+            });
 
             tarea.setUltimaMod(LocalDateTime.now());
             Tarea actualizado = repo.save(tarea);
             return TareaMapper.toDTO(actualizado);
         }
         else{
-            throw new RuntimeException("Tarea no encontrada con id:"+idTarea);
+            throw new EntityNotFoundException("la tarea con id: "+idTarea+" no existe");
         }
     }
 }

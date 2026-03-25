@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -123,14 +125,18 @@ public class TareaTest {
     @Test
     void actualizaCampoTarea_campoEstado(){
 
+        Map<String, Object> campos = new HashMap<>();
+        campos.put("estado","HECHO");
+
         Mockito.when(tareaRepo.findById(1L)).thenReturn(Optional.of(tareaEntidad));
         Mockito.when(tareaRepo.save(Mockito.any(Tarea.class))).thenAnswer(i -> {
             return (Tarea) i.getArguments()[0];
         });
 
 
-        TareaDTO resultado = tareaService.serviceUpdateFieldTarea(1L,"estado","HECHO");
+        TareaDTO resultado = tareaService.serviceUpdateFieldTarea(1L,campos);
         
+        assertNotNull(resultado);
         assertEquals(Estado.HECHO, resultado.getEstado());
         Mockito.verify(tareaRepo).save(tareaEntidad);
     }
@@ -142,9 +148,8 @@ public class TareaTest {
         Mockito.when(tareaRepo.existsById(1L)).thenReturn(true);
         Mockito.doNothing().when(tareaRepo).deleteById(1L);
 
-        String resultado = tareaService.serviceDeleteTarea(1L);
+        tareaService.serviceDeleteTarea(1L);
 
-        assertEquals("Tarea borrada correctamente", resultado);
         Mockito.verify(tareaRepo, Mockito.times(1)).existsById(1L);
         Mockito.verify(tareaRepo, Mockito.times(1)).deleteById(1L);
     }
@@ -156,9 +161,9 @@ public class TareaTest {
         Long idInexistente = 99L;
         Mockito.when(tareaRepo.existsById(idInexistente)).thenReturn(false);
 
-        String resultado = tareaService.serviceDeleteTarea(idInexistente);
-
-        assertEquals("Tarea: 99 no encontrada", resultado);
+        assertThrows(EntityNotFoundException.class, () -> {
+            tareaService.serviceDeleteTarea(idInexistente);
+        });
 
         Mockito.verify(tareaRepo, Mockito.never()).deleteById(anyLong());
 

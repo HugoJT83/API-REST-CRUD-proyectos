@@ -1,8 +1,10 @@
 package com.practica.crud_apirest.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,16 +60,15 @@ public class TareaController {
     }
 
     @DeleteMapping("/{idTarea}")
-    public String borrarTarea(@Valid @PathVariable Long idTarea){
-
-        return servicioTarea.serviceDeleteTarea(idTarea);
+    public ResponseEntity<Void> borrarTarea(@Valid @PathVariable Long idTarea){
+        servicioTarea.serviceDeleteTarea(idTarea);
+        return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{idTarea}/{campo}")
-    public TareaDTO actualizarCampoTarea(@Valid @PathVariable Long idTarea,@Valid @PathVariable String campo,@Valid @RequestBody String nuevoValor) {
+    @PatchMapping("/{idTarea}/status")
+    public TareaDTO actualizarCampoTarea(@Valid @PathVariable Long idTarea, @Valid @RequestBody Map<String, Object> campos) {
 
-        String valorLimpio = nuevoValor.replace("\"", "");
-        return servicioTarea.serviceUpdateFieldTarea(idTarea,campo,valorLimpio);
+        return servicioTarea.serviceUpdateFieldTarea(idTarea, campos);
     }   
     
     
