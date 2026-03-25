@@ -93,7 +93,7 @@
 }
 ```
 
-**PATCH /api/tareas/{idTarea}/{campo}** - Modifica un campo de una de las tareas de la BD; este también actualiza obligatoriamente el campo "ultima modificacion"
+**PATCH /api/tareas/{idTarea}/status** - Modifica un campo de una de las tareas de la BD; este también actualiza obligatoriamente el campo "ultima modificacion"
 
 * URL:"/listado.html"
     * Respuesta: 200 OK
@@ -117,9 +117,9 @@
 
 
 * URL:"/listado.html"
-    * Respuesta: 200 OK
-    * Body: valor nuevo a modificar
+    * Respuesta: 204 NO CONTENT
+    * Body: vacio
 
-* Ejemplo de respuesta: "Tarea borrada correctamente"
+* Ejemplo de respuesta: (vacio)
 
 ---
