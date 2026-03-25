@@ -33,9 +33,9 @@
 ]
 ```
 
-**GET /api/tareas/{id_tarea}** - Obtiene los datos de una tarea concreta
+**GET /api/tareas/{idTarea}** - Obtiene los datos de una tarea concreta
 
-* URL:"/listado.html","/form.html?id=${id_tarea}"
+* URL:"/listado.html","/form.html?id=${idTarea}"
     * Respuesta: 200 OK
     * Body: Elemento JSON de tipo TareaDTO
 
@@ -73,9 +73,9 @@
 }
 ```
 
-**PUT /api/tareas/{id_tarea}** - Actualiza los datos de una tarea en la BD
+**PUT /api/tareas/{idTarea}** - Actualiza los datos de una tarea en la BD
 
-* URL:"/form.html?id=${id_tarea}"
+* URL:"/form.html?id=${idTarea}"
     * Respuesta: 200 OK
     * Body: Elemento JSON de tipo TareaDTO
 
@@ -93,7 +93,7 @@
 }
 ```
 
-**PATCH /api/tareas/{id_tarea}/{campo}** - Modifica un campo de una de las tareas de la BD; este también actualiza obligatoriamente el campo "ultima modificacion"
+**PATCH /api/tareas/{idTarea}/{campo}** - Modifica un campo de una de las tareas de la BD; este también actualiza obligatoriamente el campo "ultima modificacion"
 
 * URL:"/listado.html"
     * Respuesta: 200 OK
@@ -113,7 +113,7 @@
 ```
 
 
-**DELETE /api/tareas/{id}** - Borra una tarea de la BD
+**DELETE /api/tareas/{idTarea}** - Borra una tarea de la BD
 
 
 * URL:"/listado.html"
